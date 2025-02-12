@@ -6,7 +6,7 @@ import re
 import io
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
-from one_spain import obtener_df_archivo, map_data_to_template
+from one_spain import obtener_df_archivo, map_data_to_template, process_arbitraries
 
 
 @contextmanager
@@ -45,7 +45,7 @@ def main():
             for uploaded_file in uploaded_files:
                 try:
                     file_log = []
-                    
+
                     with st_capture(lambda text: file_log.append(text)):
                         print(f"\n=== Procesando {uploaded_file.name} ===")
                         
@@ -54,11 +54,14 @@ def main():
                         hojas = xls.sheet_names
                         df_freights, df_surcharges = obtener_df_archivo(uploaded_file, hojas)
                         result = map_data_to_template(df_freights, df_surcharges)
+                        df_arbitraries = process_arbitraries(uploaded_file, hojas[5], search_range=(7, 15))
                         
                         # Guardar en bytes
                         output = io.BytesIO()
                         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-                            result.to_excel(writer, index=False)
+                            result.to_excel(writer, sheet_name='Tarifario', index=False)
+                            df_arbitraries.to_excel(writer, sheet_name='Arbitraries', index=False)
+                            
                         processed_files[uploaded_file.name] = output.getvalue()
                         
                         print(f"✅ Procesado exitoso: {uploaded_file.name}")
