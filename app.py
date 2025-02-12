@@ -109,12 +109,15 @@ def main():
                     update_logs("\n".join(full_logs[-30:]))
 
                 except Exception as e:
-                    error_msg = f"❌ Error procesando {uploaded_file.name}: {str(e)}"
-                    print(error_msg)
-                    full_logs.append(error_msg)
+                    import traceback
+                    error_details = traceback.format_exc()  # Capturar el stack trace completo
 
-                    # Actualizar logs en caso de error
-                    update_logs("\n".join(full_logs[-30:]))
+                    error_msg = f"❌ Error procesando {uploaded_file.name}:\n{error_details}"
+                    print(error_msg)  # Mostrarlo en la consola de Streamlit
+
+                    full_logs.append(error_msg)
+                    update_logs("\n".join(full_logs[-30:]))  # Mantener últimas 30 líneas
+
 
         # Sección de descargas
         st.markdown("---")
