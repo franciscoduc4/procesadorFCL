@@ -44,6 +44,9 @@ def main():
 
     st.title("🚢 Procesador FCL ONE España")
     st.markdown("---")
+    st.markdown("### Última versión")
+    st.markdown(get_last_commit())
+    st.markdown("---")
 
     uploaded_files = st.file_uploader(
         "Selecciona archivos Excel de tarifas ONE",
@@ -115,8 +118,7 @@ def main():
 
         # Sección de descargas
         st.markdown("---")
-        st.markdown("### Última versión")
-        st.markdown(get_last_commit())
+
         st.markdown("### Descargar Archivos Procesados")
 
         cols = st.columns(2)
