@@ -193,6 +193,9 @@ def map_data_to_template(df_freights, df_surcharges):
     
     return final_df
 
+#PSS nunca viene incluido (pss en include surcharge)
+#War Risk Surcharge procesar por pais/pureto en una linea, buscarwlo en include como WRC/WRS
+
 def process_surcharges(df_surcharges, unique_routes):
     surcharge_rows = []
     container_columns = ['20DRY', '40DRY', '40HDRY', '45HDRY', '40NOR', 
@@ -209,7 +212,7 @@ def process_surcharges(df_surcharges, unique_routes):
     }
 
     # Lista de recargos permitidos
-    valid_surcharges = ['OBS', 'ETS', 'SCT', 'HEA']
+    valid_surcharges = ['OBS', 'ETS','EES', 'SCT', 'HEA']
 
     # Determinar qué columnas nunca tienen valores en unique_routes
     always_empty_containers = ['40NOR', '40HCOT', '40HCFR', 
@@ -328,6 +331,7 @@ def extract_validity_dates(file_path, sheet_name, search_range=(7, 10), col_rang
     return start_date, expiration_date
 
 
+#Agregar el SERVICE NAME
 def process_arbitraries(file_path, sheet_name, search_range=(7, 15)):
 
     def find_header_row(df, search_range):

@@ -7,6 +7,7 @@ import io
 from contextlib import contextmanager, redirect_stdout
 from io import StringIO
 from one_spain import obtener_df_archivo, map_data_to_template, process_arbitraries
+import subprocess
 
 
 @contextmanager
@@ -21,6 +22,21 @@ def st_capture(output_func):
 
         stdout.write = new_write
         yield
+
+
+
+def get_last_commit():
+    """Obtiene el hash y mensaje del último commit en el repositorio Git."""
+    try:
+        commit_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("utf-8").strip()
+        commit_message = subprocess.check_output(["git", "log", "-1", "--pretty=%B"]).decode("utf-8").strip()
+        commit_author = subprocess.check_output(["git", "log", "-1", "--pretty=%an"]).decode("utf-8").strip()
+        commit_date = subprocess.check_output(["git", "log", "-1", "--pretty=%cd", "--date=short"]).decode("utf-8").strip()
+        
+        return f"📝 Último commit: `{commit_hash}`\n📅 Fecha: {commit_date}\n👤 Autor: {commit_author}\n💬 Mensaje: {commit_message}"
+    except Exception as e:
+        return f"⚠️ No se pudo obtener la información del commit: {e}"
+
 
 
 def main():
@@ -99,6 +115,8 @@ def main():
 
         # Sección de descargas
         st.markdown("---")
+        st.markdown("### Última versión")
+        st.markdown(get_last_commit())
         st.markdown("### Descargar Archivos Procesados")
 
         cols = st.columns(2)
